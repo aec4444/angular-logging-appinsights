@@ -1,5 +1,5 @@
 {
-  "name": "logging-appinsights",
+  "name": "@gaf/angular-logging-appinsights",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,18 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build_lib": "ng build angular-logging-appinsights",
+    "copy-readme": "copyfiles .\\README.md .\\dist\\angular-logging-appinsights",
+    "copy-files": "npm run copy-readme",
+    "npm_pack": "cd dist/angular-logging-appinsights && npm pack",
+    "package": "npm run build_lib && npm run copy-files && npm run npm_pack",
+    "publish-package": "npm run package && cd dist/angular-logging-appinsights && npm publish",
+    "version:patch": "npm run git:add && npm version patch && cd projects/angular-logging-appinsights && npm version patch && cd ../.. && npm run git:push",
+    "version:minor": "npm run git:add && npm version minor && cd projects/angular-logging-appinsights && npm version minor && cd ../.. && npm run git:push",
+    "version:major": "npm run git:add && npm version major && cd projects/angular-logging-appinsights && npm version major && cd ../.. && npm run git:push",
+    "git:add": "git add -A",
+    "git:push": "git push && git push --tags"
   },
   "private": true,
   "dependencies": {
@@ -19,18 +30,23 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
+    "@gaf/typescript-interfaces-logging": "^1.1.2",
+    "applicationinsights-js": "^1.0.20",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-ng-packagr": "~0.13.0",
     "@angular/cli": "~7.3.1",
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
-    "@types/node": "~8.9.4",
+    "@types/applicationinsights-js": "^1.0.9",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -39,8 +55,11 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "ng-packagr": "^4.2.0",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
+    "tsickle": ">=0.34.0",
+    "tslib": "^1.9.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2"
   }

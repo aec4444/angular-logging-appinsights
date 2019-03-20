@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@gaf/angular-logging-appinsights": [
+        "projects/angular-logging-appinsights/src/public_api.ts"
+      ],
+      "@gaf/angular-logging-appinsights/*": [
+        "projects/angular-logging-appinsights/src/lib/*"
+      ]
+    }
   }
 }
