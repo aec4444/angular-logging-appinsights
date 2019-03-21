@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build_lib": "ng build angular-logging-appinsights",
-    "copy-readme": "copyfiles .\\README.md .\\dist\\angular-logging-appinsights",
+    "copy-readme": "copyfiles .\\projects\\angular-logging-appinsights\\README.md .\\dist\\angular-logging-appinsights",
     "copy-files": "npm run copy-readme",
     "npm_pack": "cd dist/angular-logging-appinsights && npm pack",
     "package": "npm run build_lib && npm run copy-files && npm run npm_pack",
