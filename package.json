@@ -1,6 +1,6 @@
 {
   "name": "@gaf/angular-logging-appinsights",
-  "version": "0.0.1",
+  "version": "7.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
