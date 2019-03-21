@@ -20,10 +20,11 @@ export class AppInsightsLoggerService extends Logger {
     instrumentationKey: '',
     logType: 'event',
     minimumLogLevel: 'warn',
-    dataPrefix: ''
+    dataPrefix: '',
+    dataAsJson: true
   };
 
-  constructor(private config: AppInsightsLoggerConfig) {
+  constructor(public config: AppInsightsLoggerConfig) {
     super();
 
     this.config = Object.assign({}, this._defaultConfig, this.config);
@@ -149,7 +150,7 @@ export class AppInsightsLoggerService extends Logger {
     // write JSON of each element in data if it is an object, otherwise, write string representation
     const result = {};
     data.forEach((item, index) => {
-      this.convertDataToPropertiesItem(result, item, `data${index}`);
+      this.convertDataToPropertiesItem(result, item, `${this.config.dataPrefix || ''}${index}`);
     });
 
     return result;
@@ -163,11 +164,15 @@ export class AppInsightsLoggerService extends Logger {
    */
   private convertDataToPropertiesItem(result: { [key: string]: string }, item: any, prefix: string) {
     if (typeof item === 'object') {
-      Object.keys(item).forEach(key => {
-        this.convertDataToPropertiesItem(result, item[key], `${prefix}_${key}`);
-      });
+      if (this.config.dataAsJson) {
+        result[prefix] = item ? JSON.stringify(item) : null;
+      } else {
+        Object.keys(item).forEach(key => {
+          this.convertDataToPropertiesItem(result, item[key], `${prefix}_${key}`);
+        });
+      }
     } else {
-      result[prefix] = item ? item.toString() : null;
+      result[prefix] = (item !== undefined && item !== null) ? item.toString() : null;
     }
   }
 

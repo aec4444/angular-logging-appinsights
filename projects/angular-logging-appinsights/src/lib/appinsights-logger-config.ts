@@ -6,5 +6,6 @@ export interface AppInsightsLoggerConfig {
   minimumLogLevel?: LoggerMessageTypes;
   autoFlushInterval?: number;
   dataPrefix?: string;
+  dataAsJson?: boolean;
   customProperties?: () => { [key: string]: string };
 }

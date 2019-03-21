@@ -1,24 +1,89 @@
-# AngularLoggingAppinsights
+# @gaf/angular-logging-appinsights
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
+This service allows for logging to Application Insights.  It supports the same "console" interface as other @gaf loggers.  It will allow custom data items to be sent to the logger and also allows for application level custom data to be sent during each request via a callback function.
 
-## Code scaffolding
+## Configuration
 
-Run `ng generate component component-name --project angular-logging-appinsights` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project angular-logging-appinsights`.
-> Note: Don't forget to add `--project angular-logging-appinsights` or else it will be added to the default project in your `angular.json` file. 
+### Configuration Options
 
-## Build
+Below describes the configuration options available.
 
-Run `ng build angular-logging-appinsights` to build the project. The build artifacts will be stored in the `dist/` directory.
+| Option  | Values  | Description
+|---|---|---|---|---|
+| instrumentationKey  | string  | The instrumentationKey to connect to Application Insights (required)
+| logType  | 'event' or 'trace'  | The type of log entry to write (required)
+| minimumLogLevel | LoggerMessageTypes | The minimum log severity to write.  The default is 'warn'
+| autoFlushInterval  | number  | The number of millseconds to wait until flushing the queue.  If not set, the queue will be flushed at page unload.
+| dataPrefix | string | The prefix to use when logging custom data with your log.  If not set, '' will be used as default
+| dataAsJson | boolean | If true, this will log each custom data element as JSON.  If false, it will walk each item in an object and log each property as a separate property in application insights.
+| customProperties | () => () => { [key: string]: string } | A function that is called during each log entry to get custom properties for the application.
 
-## Publishing
+### dataAsJson examples
 
-After building your library with `ng build angular-logging-appinsights`, go to the dist folder `cd dist/angular-logging-appinsights` and run `npm publish`.
+Below is an example log entry and what the data will look like based on the values of dataAsJson.
 
-## Running unit tests
+```
+this.logger.warn('this is a test', {field1: '1', field2: '2', field3: {subfield1: 'test'}}, 5, {item: 1})
+```
 
-Run `ng test angular-logging-appinsights` to execute the unit tests via [Karma](https://karma-runner.github.io).
+#### dataAsJson = true
 
-## Further help
+The application insights data will look like this, assuming dataPrefix = 'data'
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+| Key | Value
+|---|---|
+| data0 | {field1: '1', field2: '2', field3: {subfield1: 'test'}}
+| data1 | 5
+| data2 | {item: 1}
+
+#### dataAsJson = false
+
+The application insights data will look like this, assuming dataPrefix = 'data'
+
+| Key | Value
+|---|---|
+| data0_field1 | '1'
+| data0_field2 | '2'
+| data0_field3_subfield1 | 'test'
+| data1 | 5
+| data2_item | 1
+
+
+### forRoot configuration
+
+If only one AppInsightsLogger is necessary, and it is going to be used as a stand-alone object (not with @gaf/angular-logging-manager), you can configure using forRoot.  
+
+Below is an example:
+
+```
+    AppInsightsLoggerModule.forRoot({
+      instrumentationKey: 'xyz',
+      logType: 'trace',
+      minimumLogLevel: 'info',
+      dataAsJson: false,
+      dataPrefix: 'test',
+      autoFlushInterval: 5000,
+      customProperties: getCustomProperties
+    })
+```
+
+### constructService configuration
+
+If you wish to configure multiple services for app insights, or wish to use @gaf/angular-logging-manager, you can use the `constructService` convenience method to allow to provide the service.
+
+Below is an example:
+
+```
+providers: [
+  { provide: Logger, useFactory: () => 
+      AppInsightsLoggerModule.constructService(
+        instrumentationKey: 'xyz',
+        logType: 'trace',
+        minimumLogLevel: 'info',
+        dataAsJson: false,
+        dataPrefix: 'test',
+        autoFlushInterval: 5000,
+        customProperties: getCustomProperties
+      )
+  }
+]
