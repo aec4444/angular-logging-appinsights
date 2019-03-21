@@ -8,7 +8,7 @@ enum SeverityLevel {
   Information = 1,
   Warning = 2,
   Error = 3,
-  Critical = 4,
+  Critical = 4
 }
 
 @Injectable()
@@ -42,10 +42,15 @@ export class AppInsightsLoggerService extends Logger {
 
   //#region Auto Flush
   private _setupAutoFlush() {
-    if (this._timeoutToken === undefined &&
-        this.config.autoFlushInterval !== undefined &&
-        this.config.autoFlushInterval !== null) {
-      this._timeoutToken = setTimeout(() => this._handleAutoFlush(), this.config.autoFlushInterval);
+    if (
+      this._timeoutToken === undefined &&
+      this.config.autoFlushInterval !== undefined &&
+      this.config.autoFlushInterval !== null
+    ) {
+      this._timeoutToken = setTimeout(
+        () => this._handleAutoFlush(),
+        this.config.autoFlushInterval
+      );
     }
   }
 
@@ -63,7 +68,11 @@ export class AppInsightsLoggerService extends Logger {
   public set AuthenticatedUser(value: string) {
     this._userId = value;
 
-    if (this._userId !== undefined && this._userId !== null && this._userId !== '') {
+    if (
+      this._userId !== undefined &&
+      this._userId !== null &&
+      this._userId !== ''
+    ) {
       AppInsights.setAuthenticatedUserContext(this._userId, undefined, true);
     } else {
       AppInsights.clearAuthenticatedUserContext();
@@ -87,28 +96,30 @@ export class AppInsightsLoggerService extends Logger {
 
   private _write(type: LoggerMessageTypes, message: string, data?: any[]) {
     // handle error differently
-    if (type === 'error') {
-      this.error(message, data);
-    } else {
-      // now we have the severity which we may need
-      // turn the data into values
-      const properties = this.convertDataToProperties(data);
-
-      if (this.config.logType === 'event') {
-        this.logEvent(message, properties);
+    if (this.shouldLog(type)) {
+      if (type === 'error') {
+        this.error(message, data);
       } else {
-        let sev: SeverityLevel = SeverityLevel.Information;
+        // now we have the severity which we may need
+        // turn the data into values
+        const properties = this.convertDataToProperties(data);
 
-        switch (type) {
-          case 'warn':
-            sev = SeverityLevel.Warning;
-            break;
-          case 'debug':
-            sev = SeverityLevel.Verbose;
-            break;
+        if (this.config.logType === 'event') {
+          this.logEvent(message, properties);
+        } else {
+          let sev: SeverityLevel = SeverityLevel.Information;
+
+          switch (type) {
+            case 'warn':
+              sev = SeverityLevel.Warning;
+              break;
+            case 'debug':
+              sev = SeverityLevel.Verbose;
+              break;
+          }
+
+          this.logTrace(message, properties, sev);
         }
-
-        this.logTrace(message, properties, sev);
       }
     }
   }
@@ -116,25 +127,41 @@ export class AppInsightsLoggerService extends Logger {
   //#region Event, Trace or Exception helper functions
   private logEvent(
     name: string,
-    properties?: {[key: string]: string},
-    measurements?: {[key: string]: number}) {
-    AppInsights.trackEvent(name, this.getCustomProperties(properties), measurements);
+    properties?: { [key: string]: string },
+    measurements?: { [key: string]: number }
+  ) {
+    AppInsights.trackEvent(
+      name,
+      this.getCustomProperties(properties),
+      measurements
+    );
     this._setupAutoFlush();
   }
 
   private logTrace(
     name: string,
-    properties?: {[key: string]: string},
-    severityLevel?: SeverityLevel) {
-    AppInsights.trackTrace(name, this.getCustomProperties(properties), severityLevel);
+    properties?: { [key: string]: string },
+    severityLevel?: SeverityLevel
+  ) {
+    AppInsights.trackTrace(
+      name,
+      this.getCustomProperties(properties),
+      severityLevel
+    );
     this._setupAutoFlush();
   }
 
   private logException(
     error: Error,
-    properties?: {[key: string]: string},
-    measurements?: {[key: string]: number}) {
-    AppInsights.trackException(error, null, this.getCustomProperties(properties), measurements);
+    properties?: { [key: string]: string },
+    measurements?: { [key: string]: number }
+  ) {
+    AppInsights.trackException(
+      error,
+      null,
+      this.getCustomProperties(properties),
+      measurements
+    );
     this._setupAutoFlush();
   }
 
@@ -150,7 +177,11 @@ export class AppInsightsLoggerService extends Logger {
     // write JSON of each element in data if it is an object, otherwise, write string representation
     const result = {};
     data.forEach((item, index) => {
-      this.convertDataToPropertiesItem(result, item, `${this.config.dataPrefix || ''}${index}`);
+      this.convertDataToPropertiesItem(
+        result,
+        item,
+        `${this.config.dataPrefix || ''}${index}`
+      );
     });
 
     return result;
@@ -162,26 +193,36 @@ export class AppInsightsLoggerService extends Logger {
    * @param item item to parse
    * @param prefix prefix portion of the key to use
    */
-  private convertDataToPropertiesItem(result: { [key: string]: string }, item: any, prefix: string) {
+  private convertDataToPropertiesItem(
+    result: { [key: string]: string },
+    item: any,
+    prefix: string
+  ) {
     if (typeof item === 'object') {
       if (this.config.dataAsJson) {
         result[prefix] = item ? JSON.stringify(item) : null;
       } else {
         Object.keys(item).forEach(key => {
-          this.convertDataToPropertiesItem(result, item[key], `${prefix}_${key}`);
+          this.convertDataToPropertiesItem(
+            result,
+            item[key],
+            `${prefix}_${key}`
+          );
         });
       }
     } else {
-      result[prefix] = (item !== undefined && item !== null) ? item.toString() : null;
+      result[prefix] =
+        item !== undefined && item !== null ? item.toString() : null;
     }
   }
-
 
   /**
    * Call custom function to get high level properties and combine them with the results
    * @param properties Properties collected from the call to the logger
    */
-  private getCustomProperties(properties?: { [key: string]: string }): { [key: string]: string } {
+  private getCustomProperties(properties?: {
+    [key: string]: string;
+  }): { [key: string]: string } {
     if (typeof this.config.customProperties === 'function') {
       const customProperties = this.config.customProperties();
       if (customProperties !== undefined && customProperties !== null) {
@@ -227,7 +268,8 @@ export class AppInsightsLoggerService extends Logger {
 
   error(message: string | Error, ...data: any[]): void {
     const properties = this.convertDataToProperties(data);
-    const error = (message instanceof Error) ? message as Error : new Error(message);
+    const error =
+      message instanceof Error ? (message as Error) : new Error(message);
     this.logException(error, properties);
   }
 

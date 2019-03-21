@@ -19,7 +19,7 @@ function getCustomProperties(): { [key: string]: string} {
     AppInsightsLoggerModule.forRoot({
       instrumentationKey: 'b816c4fe-8de6-4945-a9f7-84a8697f63db',
       logType: 'trace',
-      minimumLogLevel: 'info',
+      minimumLogLevel: 'warn',
       dataAsJson: false,
       dataPrefix: 'test',
       autoFlushInterval: 5000,
