@@ -6,6 +6,7 @@
   },
   "whitelistedNonPeerDependencies": [
     "tslib",
-    "@gaf/typescript-interfaces-logging"
+    "@gaf/typescript-interfaces-logging",
+    "applicationinsights-js"
   ]
 }
