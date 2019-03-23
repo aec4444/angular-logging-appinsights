@@ -12,15 +12,28 @@ import { AppInsightsLoggerConfig } from './appinsights-logger-config';
   exports: []
 })
 export class AppInsightsLoggerModule {
+  static constructService(
+    config: AppInsightsLoggerConfig
+  ) {
+    const svc = new AppInsightsLoggerService(config);
+    return svc;
+  }
+
   static forRoot(
     config: AppInsightsLoggerConfig
   ): ModuleWithProviders {
+
+    function appInsightsLoggerServiceFactory() {
+      const svc = new AppInsightsLoggerService(config);
+      return svc;
+    }
+
     return {
       ngModule: AppInsightsLoggerModule,
       providers: [
         {
           provide: Logger,
-          useFactory: () => new AppInsightsLoggerService(config)
+          useFactory: appInsightsLoggerServiceFactory
         }
       ]
     };
