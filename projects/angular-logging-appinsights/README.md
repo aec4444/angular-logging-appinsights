@@ -22,7 +22,7 @@ Below describes the configuration options available.
 
 Below is an example log entry and what the data will look like based on the values of dataAsJson.
 
-```
+``` javascript
 this.logger.warn('this is a test', {field1: '1', field2: '2', field3: {subfield1: 'test'}}, 5, {item: 1})
 ```
 
@@ -48,14 +48,13 @@ The application insights data will look like this, assuming dataPrefix = 'data'
 | data1 | 5
 | data2_item | 1
 
-
 ### forRoot configuration
 
 If only one AppInsightsLogger is necessary, and it is going to be used as a stand-alone object (not with @gaf/angular-logging-manager), you can configure using forRoot.  
 
 Below is an example:
 
-```
+``` javascript
     AppInsightsLoggerModule.forRoot({
       instrumentationKey: 'xyz',
       logType: 'trace',
@@ -67,16 +66,16 @@ Below is an example:
     })
 ```
 
-### constructService configuration
+### Service Instantiation
 
-If you wish to configure multiple services for app insights, or wish to use @gaf/angular-logging-manager, you can use the `constructService` convenience method to allow to provide the service.
+If you wish to configure multiple services for app insights, or wish to use @gaf/angular-logging-manager, you can simply instantiate a copy of the service
 
 Below is an example:
 
-```
+``` javascript
 providers: [
-  { provide: Logger, useFactory: () => 
-      AppInsightsLoggerModule.constructService(
+  { provide: Logger, useFactory: () =>
+      new AppInsightsLoggerService(
         instrumentationKey: 'xyz',
         logType: 'trace',
         minimumLogLevel: 'info',

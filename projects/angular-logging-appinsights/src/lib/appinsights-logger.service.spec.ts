@@ -10,7 +10,7 @@ describe('AppInsightsLoggerService', () => {
   const config: AppInsightsLoggerConfig = {
     autoFlushInterval: 100,
     customProperties: () => {
-      return {test: '123'}
+      return {test: '123'};
     },
     dataAsJson: true,
     dataPrefix: 'data',
@@ -28,7 +28,7 @@ describe('AppInsightsLoggerService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: AppInsightsLoggerService, useFactory: () =>
-            AppInsightsLoggerModule.constructService(config) }
+            new AppInsightsLoggerService(config) }
       ]
     });
     service = TestBed.get(AppInsightsLoggerService);
@@ -42,7 +42,7 @@ describe('AppInsightsLoggerService', () => {
     expect(service).toBeTruthy();
   });
 
-  const testProps = (props: {[key:string]:string}, data: any[]) => {
+  const testProps = (props: {[key: string]: string}, data: any[]) => {
     if (data !== undefined && data !== null && data.length > 0) {
       if (service.config.dataAsJson) {
         data.forEach((item, index) => {
@@ -73,12 +73,12 @@ describe('AppInsightsLoggerService', () => {
       });
     } else {
       const name = (logType === 'event' ? 'trackEvent' : 'trackTrace');
-      spyOn<any>(AppInsights, name).and.callFake((msg: string, props: {[key:string]: string}) => {
+      spyOn<any>(AppInsights, name).and.callFake((msg: string, props: {[key: string]: string}) => {
         expect(msg).toBe(message);
         testProps(props, data);
       });
     }
-  }
+  };
 
   const logMessage = (
     logType: 'event' | 'trace',
@@ -87,7 +87,7 @@ describe('AppInsightsLoggerService', () => {
     ...data: any[]) => {
       service.config.logType = logType;
 
-      logMessageSetup(logType, type, message, data)
+      logMessageSetup(logType, type, message, data);
       service.write(type, message, ...data);
   };
 
@@ -98,7 +98,7 @@ describe('AppInsightsLoggerService', () => {
     ...data: any[]) => {
       service.config.logType = logType;
 
-      logMessageSetup(logType, type, message, data)
+      logMessageSetup(logType, type, message, data);
       service[type](message, ...data);
       jasmine.clock().tick(service.config.autoFlushInterval + 1);
   };
