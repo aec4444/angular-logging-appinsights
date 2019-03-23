@@ -40,6 +40,16 @@ export class AppInsightsLoggerService extends Logger {
     }
   }
 
+  public get minimumLevel(): LoggerMessageTypes {
+    return this.config.minimumLogLevel;
+  }
+
+  public set minimumLevel(value: LoggerMessageTypes) {
+    if (this.config !== undefined) {
+      this.config.minimumLogLevel = value;
+    }
+  }
+
   //#region Auto Flush
   private _setupAutoFlush() {
     if (
@@ -61,10 +71,16 @@ export class AppInsightsLoggerService extends Logger {
   //#endregion
 
   //#region Authorized User
+  /**
+   * Get the authorized user that will be sent with logs
+   */
   public get AuthenticatedUser(): string {
     return this._userId;
   }
 
+  /**
+   * Set the authorized user for logging
+   */
   public set AuthenticatedUser(value: string) {
     this._userId = value;
 
@@ -80,6 +96,12 @@ export class AppInsightsLoggerService extends Logger {
   }
   //#endregion
 
+  /**
+   *
+   * @param assertion false to log the error
+   * @param message message
+   * @param data data
+   */
   assert(assertion: boolean, message: string, ...data: any[]) {
     super.assert(assertion, message, data);
   }
@@ -92,6 +114,15 @@ export class AppInsightsLoggerService extends Logger {
    */
   write(type: LoggerMessageTypes, message: string, ...data: any[]) {
     this._write(type, message, data);
+  }
+
+  protected shouldLog(level: LoggerMessageTypes): boolean {
+    const logLevels: LoggerMessageTypes[] = ['debug', 'info', 'log', 'warn', 'error'];
+    const minLevel = logLevels.indexOf(this.minimumLevel);
+    const currentLevel = logLevels.indexOf(level);
+
+    console.log(this.config.minimumLogLevel, level, minLevel, currentLevel);
+    return currentLevel >= minLevel;
   }
 
   private _write(type: LoggerMessageTypes, message: string, data?: any[]) {
