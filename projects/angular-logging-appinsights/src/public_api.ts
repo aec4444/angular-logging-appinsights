@@ -4,4 +4,4 @@
 
 export * from './lib/appinsights-logger.service';
 export * from './lib/appinsights-logger.module';
-export * from './lib/appinsights-logger-config';
+export { AppInsightsLoggerConfig } from '@gaf/typescript-logging-appinsights';

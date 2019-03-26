@@ -3,12 +3,12 @@ import { AppInsightsLoggerService } from './appinsights-logger.service';
 import { AppInsightsLoggerModule } from './appinsights-logger.module';
 import { LoggerMessageTypes } from '@gaf/typescript-interfaces-logging';
 import { AppInsights } from 'applicationinsights-js';
-import { AppInsightsLoggerConfig } from './appinsights-logger-config';
+import { AppInsightsLoggerConfig } from '@gaf/typescript-logging-appinsights';
 
 describe('AppInsightsLoggerService', () => {
   let service: AppInsightsLoggerService;
   const config: AppInsightsLoggerConfig = {
-    autoFlushInterval: 100,
+    // autoFlushInterval: 100,
     customProperties: () => {
       return {test: '123'};
     },
@@ -20,11 +20,6 @@ describe('AppInsightsLoggerService', () => {
   };
 
   beforeEach(() => {
-    jasmine.clock().uninstall();
-    jasmine.clock().install();
-  });
-
-  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         { provide: AppInsightsLoggerService, useFactory: () =>
@@ -32,10 +27,6 @@ describe('AppInsightsLoggerService', () => {
       ]
     });
     service = TestBed.get(AppInsightsLoggerService);
-  });
-
-  afterEach(() => {
-    jasmine.clock().uninstall();
   });
 
   it('should be created', () => {
@@ -100,7 +91,6 @@ describe('AppInsightsLoggerService', () => {
 
       logMessageSetup(logType, type, message, data);
       service[type](message, ...data);
-      jasmine.clock().tick(service.config.autoFlushInterval + 1);
   };
 
   it('should log an event log', () => {

@@ -1,7 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { AppInsightsLoggerService } from './appinsights-logger.service';
 import { Logger } from '@gaf/typescript-interfaces-logging';
-import { AppInsightsLoggerConfig } from './appinsights-logger-config';
+import { AppInsightsLoggerConfig } from '@gaf/typescript-logging-appinsights';
 
 @NgModule({
   declarations: [],
@@ -12,13 +12,6 @@ import { AppInsightsLoggerConfig } from './appinsights-logger-config';
   exports: []
 })
 export class AppInsightsLoggerModule {
-  static constructService(
-    config: AppInsightsLoggerConfig
-  ) {
-    const svc = new AppInsightsLoggerService(config);
-    return svc;
-  }
-
   static forRoot(
     config: AppInsightsLoggerConfig
   ): ModuleWithProviders {

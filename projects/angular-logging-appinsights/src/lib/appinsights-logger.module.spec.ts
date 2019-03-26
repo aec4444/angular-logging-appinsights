@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppInsightsLoggerService } from './appinsights-logger.service';
-import { AppInsightsLoggerModule } from './appinsights-logger.module';
-import { AppInsightsLoggerConfig } from './appinsights-logger-config';
 import { Logger } from '@gaf/typescript-interfaces-logging';
+import { AppInsightsLoggerConfig } from '@gaf/typescript-logging-appinsights';
+import { AppInsightsLoggerModule } from './appinsights-logger.module';
 
 describe('AppInsightsLoggerModule', () => {
   let service: AppInsightsLoggerService;
