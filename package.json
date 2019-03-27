@@ -17,7 +17,8 @@
     "version": "node ./copy-version-libs && npm run git:add",
     "postversion": "npm run git:push",
     "git:add": "git add -A",
-    "git:push": "git push && git push --tags"
+    "git:push": "git push && git push --tags",
+    "merge-master": "git checkout -q master && git merge dev && git push"
   },
   "private": true,
   "dependencies": {
