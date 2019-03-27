@@ -14,9 +14,8 @@
     "npm_pack": "cd dist/angular-logging-appinsights && npm pack",
     "package": "npm run build_lib && npm run copy-files && npm run npm_pack",
     "publish-package": "npm run package && cd dist/angular-logging-appinsights && npm publish",
-    "version:patch": "npm run git:add && npm version patch && cd projects/angular-logging-appinsights && npm version patch && cd ../.. && npm run git:push",
-    "version:minor": "npm run git:add && npm version minor && cd projects/angular-logging-appinsights && npm version minor && cd ../.. && npm run git:push",
-    "version:major": "npm run git:add && npm version major && cd projects/angular-logging-appinsights && npm version major && cd ../.. && npm run git:push",
+    "preversion": "npm run git:add",
+    "postversion": "npm run ./copy-version-libs.js && npm run git:push",
     "git:add": "git add -A",
     "git:push": "git push && git push --tags"
   },
