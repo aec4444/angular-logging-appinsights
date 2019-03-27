@@ -14,8 +14,8 @@
     "npm_pack": "cd dist/angular-logging-appinsights && npm pack",
     "package": "npm run build_lib && npm run copy-files && npm run npm_pack",
     "publish-package": "npm run package && cd dist/angular-logging-appinsights && npm publish",
-    "preversion": "npm run git:add",
-    "postversion": "node ./copy-version-libs.js && npm run git:push",
+    "version": "node ./copy-version-libs && npm run git:add",
+    "postversion": "npm run git:push",
     "git:add": "git add -A",
     "git:push": "git push && git push --tags"
   },
